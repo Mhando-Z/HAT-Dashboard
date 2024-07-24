@@ -11,8 +11,8 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = [
             'full_name', 'reviews', 'is_student', 'student_id', 'course_of_study',
             'institution', 'branch', 'title', 'phone_number', 'nationality', 'last_login',
-            'address', 'profile_picture', 'is_paid_membership', 'is_paid_conference',
-            'gender', 'college', 'date_registered',
+            'profile_picture', 'is_paid_membership', 'is_paid_conference',
+            'gender', 'college', 'date_registered', 'city', 'country', 'physical_address'
         ]
 
 
@@ -52,10 +52,12 @@ class MyTokenObtainSerializer(TokenObtainPairSerializer):
             token['is_student'] = user.profile.is_student
             token['institution'] = user.profile.institution
             token['branch'] = user.profile.branch
+            token['country'] = user.profile.country
+            token['city'] = user.profile.city
             token['title'] = user.profile.title
             token['phone_number'] = user.profile.phone_number
             token['nationality'] = user.profile.nationality
-            token['address'] = user.profile.address
+            token['physical_address'] = user.profile.physical_address
             token['profile_picture'] = user.profile.profile_picture.url if user.profile.profile_picture else None
             token['is_paid_membership'] = user.profile.is_paid_membership
             token['is_paid_conference'] = user.profile.is_paid_conference
@@ -109,59 +111,13 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 
 # Update User
-class UserUpdateSerializer(serializers.ModelSerializer):
-    profile = ProfileSerializer()  # Nested serializer for the Profile model
-
-    class Meta:
-        model = User
-        fields = [
-            'id', 'email', 'username', 'is_active', 'is_staff', 'profile'
-        ]
-
-    def update(self, instance, validated_data):
-        profile_data = validated_data.pop('profile', {})
-        profile = instance.profile
-
-        # Update User instance
-        instance.email = validated_data.get('email', instance.email)
-        instance.username = validated_data.get('username', instance.username)
-        instance.is_active = validated_data.get(
-            'is_active', instance.is_active)
-        instance.is_staff = validated_data.get('is_staff', instance.is_staff)
-        instance.save()
-
-        # Update Profile instance
-        profile.full_name = profile_data.get('full_name', profile.full_name)
-        profile.reviews = profile_data.get('reviews', profile.reviews)
-        profile.is_student = profile_data.get('is_student', profile.is_student)
-        profile.student_id = profile_data.get('student_id', profile.student_id)
-        profile.course_of_study = profile_data.get(
-            'course_of_study', profile.course_of_study)
-        profile.institution = profile_data.get(
-            'institution', profile.institution)
-        profile.branch = profile_data.get('branch', profile.branch)
-        profile.title = profile_data.get('title', profile.title)
-        profile.phone_number = profile_data.get(
-            'phone_number', profile.phone_number)
-        profile.nationality = profile_data.get(
-            'nationality', profile.nationality)
-        profile.address = profile_data.get('address', profile.address)
-        if profile_data.get('profile_picture') is not None:
-            profile.profile_picture = profile_data.get('profile_picture')
-        profile.is_paid_membership = profile_data.get(
-            'is_paid_membership', profile.is_paid_membership)
-        profile.is_paid_conference = profile_data.get(
-            'is_paid_conference', profile.is_paid_conference)
-        profile.gender = profile_data.get('gender', profile.gender)
-        profile.college = profile_data.get('college', profile.college)
-        profile.save()
-
-        return instance
 
 
 # Admin User Management
+
+
 class AdminUserManagementSerializer(serializers.ModelSerializer):
-    profile = ProfileSerializer()
+    profile = ProfileSerializer(required=False)
 
     class Meta:
         model = User
@@ -196,7 +152,8 @@ class AdminUserManagementSerializer(serializers.ModelSerializer):
             'phone_number', profile.phone_number)
         profile.nationality = profile_data.get(
             'nationality', profile.nationality)
-        profile.address = profile_data.get('address', profile.address)
+        profile.physical_address = profile_data.get(
+            'physical_address', profile.physical_address)
         if profile_data.get('profile_picture') is not None:
             profile.profile_picture = profile_data.get('profile_picture')
         profile.is_paid_membership = profile_data.get(
@@ -212,3 +169,74 @@ class AdminUserManagementSerializer(serializers.ModelSerializer):
     def delete(self, instance):
         instance.delete()
         return {"message": "User deleted successfully"}
+
+
+# change password serializer
+
+class ChangePasswordSerializer(serializers.Serializer):
+    new_password = serializers.CharField(
+        write_only=True, required=True, validators=[validate_password])
+
+    def validate(self, attrs):
+        user = self.context['request'].user
+        if not user.is_authenticated:
+            raise serializers.ValidationError(
+                {"new_password": "User is not authenticated."})
+        return attrs
+
+    def save(self, **kwargs):
+        user = self.context['request'].user
+        user.set_password(self.validated_data['new_password'])
+        user.save()
+        return user
+
+
+class UserUpdateSerializer(serializers.ModelSerializer):
+    # Nested serializer for the Profile model
+    profile = ProfileSerializer(required=False)
+    profile_picture = serializers.ImageField(required=False)
+
+    class Meta:
+        model = User
+        fields = [
+            'profile', 'profile_picture',
+        ]
+
+    def update(self, instance, validated_data):
+        # Extract profile data and remove from validated_data
+        profile_data = validated_data.pop('profile', {})
+        profile = instance.profile
+
+        # Update Profile instance
+        profile.full_name = profile_data.get('full_name', profile.full_name)
+        profile.reviews = profile_data.get('reviews', profile.reviews)
+        profile.is_student = profile_data.get('is_student', profile.is_student)
+        profile.student_id = profile_data.get('student_id', profile.student_id)
+        profile.course_of_study = profile_data.get(
+            'course_of_study', profile.course_of_study)
+        profile.institution = profile_data.get(
+            'institution', profile.institution)
+        profile.branch = profile_data.get('branch', profile.branch)
+        profile.title = profile_data.get('title', profile.title)
+        profile.phone_number = profile_data.get(
+            'phone_number', profile.phone_number)
+        profile.nationality = profile_data.get(
+            'nationality', profile.nationality)
+        profile.physical_address = profile_data.get(
+            'physical_address', profile.physical_address)
+        profile.gender = profile_data.get('gender', profile.gender)
+        profile.college = profile_data.get('college', profile.college)
+        profile.country = profile_data.get('country', profile.country)
+        profile.city = profile_data.get('city', profile.city)
+
+        # Handle file upload for profile_picture
+        if profile_data.get('profile_picture') is not None:
+            profile.profile_picture = profile_data.get('profile_picture')
+
+        profile.is_paid_membership = profile_data.get(
+            'is_paid_membership', profile.is_paid_membership)
+        profile.is_paid_conference = profile_data.get(
+            'is_paid_conference', profile.is_paid_conference)
+        profile.save()
+
+        return instance

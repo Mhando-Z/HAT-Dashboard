@@ -26,7 +26,9 @@ class Profile(models.Model):
     title = models.CharField(max_length=50, blank=True, null=True)
     phone_number = models.CharField(max_length=15, blank=True, null=True)
     nationality = models.CharField(max_length=50, blank=True, null=True)
-    address = models.CharField(max_length=300, blank=True, null=True)
+    country = models.CharField(max_length=50, blank=True, null=True)
+    city = models.CharField(max_length=50, blank=True, null=True)
+    physical_address = models.CharField(max_length=300, blank=True, null=True)
     profile_picture = models.ImageField(
         upload_to='profile_pictures/', blank=True, null=True)
     is_paid_membership = models.BooleanField(default=False)

@@ -1,8 +1,5 @@
-from django.urls import reverse
 from rest_framework.generics import GenericAPIView
-from rest_framework.permissions import AllowAny
-from rest_framework.decorators import api_view
-from rest_framework import status
+from django.urls import reverse
 from django.core.mail import send_mail
 from django.contrib.auth.models import User
 from django.utils.encoding import force_bytes, force_str
@@ -13,9 +10,11 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth.hashers import make_password
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import generics, status, viewsets
 from rest_framework.generics import RetrieveAPIView
+from rest_framework.parsers import MultiPartParser, FormParser
 from .models import *
 from . seriallizer import *
 
@@ -28,6 +27,40 @@ class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     permission_classes = [AllowAny]
     serializer_class = RegisterSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = self.perform_create(serializer)
+
+        # Generate JWT token
+        refresh = RefreshToken.for_user(user)
+        access_token = str(refresh.access_token)
+
+        # Create the response data
+        response_data = {
+            "id": user.id,
+            "username": user.username,
+            "email": user.email,
+        }
+
+        # Create the response
+        response = Response(response_data, status=status.HTTP_201_CREATED)
+        response['x-auth-token'] = access_token
+        response['access-control-expose-headers'] = 'x-auth-token'
+
+        return response
+
+    def perform_create(self, serializer):
+        return serializer.save()
+
+
+class UserProfileCompletionView(generics.UpdateAPIView):
+    serializer_class = UserProfileSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
 
 
 # Getting users
@@ -42,6 +75,7 @@ def getUsers(request):
 class UserProfileUpdateView(generics.UpdateAPIView):
     queryset = User.objects.all()
     serializer_class = UserUpdateSerializer
+    parser_classes = (MultiPartParser, FormParser)
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
@@ -55,6 +89,7 @@ class UserProfileView(RetrieveAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
+
         return self.request.user
 
 # admin user management
@@ -114,3 +149,48 @@ class PasswordResetConfirmView(GenericAPIView):
             user.save()
             return Response({"message": "Password reset successful."}, status=status.HTTP_200_OK)
         return Response({"error": "Invalid token or user ID."}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_account(request):
+    user = request.user
+    user.delete()
+    return Response({"message": "Account deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+
+
+# channge password view
+class ChangePasswordView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        serializer = ChangePasswordSerializer(
+            data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"detail": "Password changed successfully."}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# userupdate view
+
+
+class UserProfileUpdateView(generics.UpdateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserUpdateSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        # Return the current user object
+        return self.request.user
+
+    def patch(self, request, *args, **kwargs):
+        # Use PATCH method to support partial updates
+        if 'multipart/form-data' in request.content_type:
+            if 'profile_picture' in request.FILES:
+                # Check if file is uploaded
+                request.data['profile_picture'] = request.FILES['profile_picture']
+        return super().patch(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        # Handle PUT request for complete updates
+        return super().put(request, *args, **kwargs)
