@@ -22,6 +22,8 @@ class HeroSection(models.Model):
     class Meta:
         ordering = ['-dateIssued']
 
+# ptresident
+
 
 class PresidentSpeech(models.Model):
     title = models.CharField(null=True, blank=True, max_length=300)
@@ -82,6 +84,8 @@ class Contacts(models.Model):
 
     def __str__(self):
         return self.location
+
+# Policies
 
 # Policies
 

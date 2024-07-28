@@ -27,8 +27,9 @@ urlpatterns = [
     path('Userprofile/change-password/',
          ChangePasswordView.as_view(), name='change-password'),
     path("CompleteRegistration/",
-         UserProfileCompletionView.as_view(), name="complete")
-
-
+         UserProfileCompletionView.as_view(), name="complete"),
+    #     paymentRoutes
+    path('userPayment/', create_payment_intent, name='create_payment_intent'),
+    path('MakePayment/', record_payment, name='makepayments_payment'),
 
 ]

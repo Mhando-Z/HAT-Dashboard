@@ -9,7 +9,6 @@ from . seriallizer import *
 
 
 @api_view(['GET', 'POST'])
-@permission_classes([IsAdminUser])
 def HeroSect(request):
     if request.method == 'GET':
         herosection = HeroSection.objects.all()
@@ -53,7 +52,6 @@ def heroSection_details(request, pk):
 
 
 @api_view(['GET', 'POST'])
-@permission_classes([IsAdminUser])
 def PresidentSect(request):
     if request.method == 'GET':
         presidentspeech = PresidentSpeech.objects.all()
@@ -95,7 +93,6 @@ def President_details(request, pk):
 
 
 @api_view(['GET', 'POST'])
-@permission_classes([IsAdminUser])
 def AboutUsSect(request):
     if request.method == 'GET':
         aboutus = AboutUs.objects.all()
@@ -378,7 +375,6 @@ def Gallery_details(request, pk):
 
 
 @api_view(['GET', 'POST'])
-@permission_classes([IsAdminUser])
 def ResourceSectt(request):
     if request.method == 'GET':
         resources = Resource.objects.all()

@@ -240,3 +240,10 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         profile.save()
 
         return instance
+
+
+# payment
+class PaymentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Payment
+        fields = '__all__'

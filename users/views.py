@@ -1,3 +1,8 @@
+import uuid
+import stripe
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
 from rest_framework.generics import GenericAPIView
 from django.urls import reverse
 from django.core.mail import send_mail
@@ -194,3 +199,52 @@ class UserProfileUpdateView(generics.UpdateAPIView):
     def put(self, request, *args, **kwargs):
         # Handle PUT request for complete updates
         return super().put(request, *args, **kwargs)
+
+
+# Stripe payment integration
+# views.py
+
+stripe.api_key = set
+stripe.api_key = settings.STRIPE_SECRET_KEY
+
+
+@csrf_exempt
+def create_payment_intent(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            amount = data['amount']
+
+            payment_intent = stripe.PaymentIntent.create(
+                amount=amount,
+                currency='usd'
+            )
+            return JsonResponse({
+                'clientSecret': payment_intent['client_secret']
+            })
+        except Exception as e:
+            return JsonResponse({'error': str(e)})
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+
+@api_view(['POST'])
+def record_payment(request):
+    user = request.user
+    amount = request.data.get('amount')
+    transaction_id = str(uuid.uuid4())  # Generate a unique transaction ID
+    status = 'success'  # Assume success for simplicity
+
+    payment = Payment.objects.create(
+        user=user, amount=amount, transaction_id=transaction_id, status=status)
+    serializer = PaymentSerializer(payment)
+
+    # Generate receipt (you can customize the receipt details)
+    receipt = {
+        'user': user.username,
+        'amount': amount,
+        'transaction_id': transaction_id,
+        'date': payment.date,
+    }
+
+    return Response({'payment': serializer.data, 'receipt': receipt}, status=status.HTTP_201_CREATED)
