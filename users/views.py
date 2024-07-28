@@ -60,14 +60,6 @@ class RegisterView(generics.CreateAPIView):
         return serializer.save()
 
 
-class UserProfileCompletionView(generics.UpdateAPIView):
-    serializer_class = UserProfileSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_object(self):
-        return self.request.user
-
-
 # Getting users
 @api_view(['GET'])
 def getUsers(request):
@@ -76,19 +68,7 @@ def getUsers(request):
     return Response(serializer.data)
 
 
-# Updating User
-class UserProfileUpdateView(generics.UpdateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserUpdateSerializer
-    parser_classes = (MultiPartParser, FormParser)
-    permission_classes = [IsAuthenticated]
-
-    def get_object(self):
-        return self.request.user
-
 # Obtain userr profile details
-
-
 class UserProfileView(RetrieveAPIView):
     serializer_class = UserProfileSerializer
     permission_classes = [IsAuthenticated]
@@ -179,10 +159,35 @@ class ChangePasswordView(APIView):
 # userupdate view
 
 
+# Updating User
+
+# class UserProfileUpdateView(generics.UpdateAPIView):
+#     queryset = User.objects.all()
+#     serializer_class = UserUpdateSerializer
+#     permission_classes = [IsAuthenticated]
+
+#     def get_object(self):
+#         # Return the current user object
+#         return self.request.user
+
+#     def patch(self, request, *args, **kwargs):
+#         # Use PATCH method to support partial updates
+#         if 'multipart/form-data' in request.content_type:
+#             if 'profile_picture' in request.FILES:
+#                 # Check if file is uploaded
+#                 request.data['profile_picture'] = request.FILES['profile_picture']
+#         return super().patch(request, *args, **kwargs)
+
+#     def put(self, request, *args, **kwargs):
+#         # Handle PUT request for complete updates
+#         return super().put(request, *args, **kwargs)
+
+
 class UserProfileUpdateView(generics.UpdateAPIView):
     queryset = User.objects.all()
     serializer_class = UserUpdateSerializer
     permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser]  # Add this line
 
     def get_object(self):
         # Return the current user object
@@ -190,19 +195,15 @@ class UserProfileUpdateView(generics.UpdateAPIView):
 
     def patch(self, request, *args, **kwargs):
         # Use PATCH method to support partial updates
-        if 'multipart/form-data' in request.content_type:
-            if 'profile_picture' in request.FILES:
-                # Check if file is uploaded
-                request.data['profile_picture'] = request.FILES['profile_picture']
         return super().patch(request, *args, **kwargs)
 
     def put(self, request, *args, **kwargs):
         # Handle PUT request for complete updates
         return super().put(request, *args, **kwargs)
 
-
 # Stripe payment integration
 # views.py
+
 
 stripe.api_key = set
 stripe.api_key = settings.STRIPE_SECRET_KEY
