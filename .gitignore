@@ -7,8 +7,6 @@ __pycache__/
 # Django
 db.sqlite3
 media/
-static/
-static/images/
 .env
 
 # Environment
