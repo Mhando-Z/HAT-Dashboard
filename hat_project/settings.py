@@ -15,9 +15,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-8btxn)0yxr+(7#qm0f&a@$zmh+6vq)9vu$7!gnnjia+e8=2q9%'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["localhost", "Mhando.pythonanywhere.com"]
 
 AUTH_USER_MODEL = 'users.User'
 
