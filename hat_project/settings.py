@@ -4,6 +4,10 @@ from datetime import timedelta
 from pathlib import Path
 import os
 
+from dotenv import load_dotenv
+load_dotenv(".env")
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -40,6 +44,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # Authentication apps
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',  # For Google authentication
+    'rest_framework.authtoken',
+    'dj_rest_auth',
+    'dj_rest_auth.registration',
+
     'rest_framework',
     "corsheaders",
 
@@ -52,6 +65,19 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
 }
+
+SITE_ID = 1
+
+# Allauth configuration
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',  # Default
+    'allauth.account.auth_backends.AuthenticationBackend',  # Allauth
+)
 
 
 SIMPLE_JWT = {
@@ -103,6 +129,10 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+
+    # Allauth account middleware:
+    "allauth.account.middleware.AccountMiddleware",
+
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -120,6 +150,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                # allauth
+                'django.template.context_processors.request',
             ],
         },
     },
@@ -188,9 +220,6 @@ MEDIA_URL = '/images/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-# CROSS ORIGIN RESORCE SHARING
-CORS_ALLOW_ALL_ORIGINS = True
-
 # STATIC FILES CONFIGURATIONS
 STATICFILES_DIRS = [
     BASE_DIR / "static",
@@ -205,3 +234,40 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 # Stripe integration
 STRIPE_SECRET_KEY = 'sk_test_51PfSbR2LTTNddPQFaviK74YLKvy78Uj1dJpRVM0yjeYu7QBB6LKRZh5rkKCUkLXWIKLi0YrkpySqree1EAvixdWU00CHxu8P8d'
 STRIPE_PUBLISHABLE_KEY = 'pk_test_51PfSbR2LTTNddPQFfkEcm6LOwOQiSWZT9CJwQvfdA85YEvHKaPhSkvLnSNyy82TfYlVTMGgyHl1lN53j9KNLfOfz00BZpYD8wS'
+
+
+# Google OAuth
+GOOGLE_OAUTH_CLIENT_ID = os.getenv("GOOGLE_OAUTH_CLIENT_ID")
+GOOGLE_OAUTH_CLIENT_SECRET = os.getenv("GOOGLE_OAUTH_CLIENT_SECRET")
+GOOGLE_OAUTH_CALLBACK_URL = os.getenv("GOOGLE_OAUTH_CALLBACK_URL")
+
+
+# Google configuration (you'll need to get these from the Google Developer Console)
+# django-allauth (social)
+# Authenticate if local account with this email address already exists
+SOCIALACCOUNT_EMAIL_AUTHENTICATION = True
+# Connect local account and social account if local account with that email address already exists
+SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            "client_id": GOOGLE_OAUTH_CLIENT_ID,
+            "secret": GOOGLE_OAUTH_CLIENT_SECRET,
+            "key": "",
+        },
+    },
+    "SCOPE": ["profile", "email"],
+    "AUTH_PARAMS": {
+        "access_type": "online",
+    },
+
+}
+
+# django-cors-headers
+if DEBUG:
+    CORS_ALLOW_ALL_ORIGINS = True
+    CORS_ALLOW_CREDENTIALS = True
+else:
+    CORS_ALLOWED_ORIGINS = [
+        "http://localhost:3000/",
+    ]

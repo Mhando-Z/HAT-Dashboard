@@ -230,8 +230,8 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         profile.city = profile_data.get('city', profile.city)
 
         # Handle file upload for profile_picture
-        if profile_data.get('profile_picture') is not None:
-            profile.profile_picture = profile_data.get('profile_picture')
+        # if profile_data.get('profile_picture') is not None:
+        #     profile.profile_picture = profile_data.get('profile_picture')
 
         profile.is_paid_membership = profile_data.get(
             'is_paid_membership', profile.is_paid_membership)

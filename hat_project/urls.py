@@ -11,6 +11,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('hat-api/', include('homepage.urls')),
     path('hat-users/', include('users.urls')),
+    path('accounts/', include('allauth.urls')),
 ]
 
 # imp for what you want to achieve.
