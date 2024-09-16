@@ -168,21 +168,33 @@ class Announce(models.Model):
 # Announcements Section
 
 
+# class Reference(models.Model):
+#     resource = models.ForeignKey(
+#         'Resource', related_name='references', on_delete=models.CASCADE)
+#     reference_text = models.CharField(max_length=300, blank=True, null=True)
+
+
 class Resource(models.Model):
     title = models.CharField(null=True, blank=True,
                              max_length=300, default="Hat")
-    subtitle = models.CharField(null=True, blank=True,
-                                max_length=300,)
+    subtitle = models.CharField(null=True, blank=True, max_length=300)
     author = models.CharField(null=True, blank=True,
                               max_length=300, default="Hat")
     description = models.TextField(null=True, blank=True)
-    references = models.TextField(null=True, blank=True)
-    image = models.ImageField(null=True, blank=True,
-                              upload_to="Resources/")
-    image2 = models.ImageField(
-        null=True, blank=True, upload_to="Resources/")
-    video_url = models.CharField(null=True, blank=True,
-                                 max_length=300, default="Hat")
+    image = models.ImageField(null=True, blank=True, upload_to="Resources/")
+    image2 = models.ImageField(null=True, blank=True, upload_to="Resources/")
+    video_url = models.CharField(
+        null=True, blank=True, max_length=300, default="Hat")
+    ref1 = models.CharField(null=True, blank=True,
+                            max_length=300, default="Hat")
+    ref2 = models.CharField(null=True, blank=True,
+                            max_length=300, default="Hat")
+    ref3 = models.CharField(null=True, blank=True,
+                            max_length=300, default="Hat")
+    ref4 = models.CharField(null=True, blank=True,
+                            max_length=300, default="Hat")
+    ref5 = models.CharField(null=True, blank=True,
+                            max_length=300, default="Hat")
     dateIssued = models.DateTimeField(auto_now_add=True)
     id = models.UUIDField(default=uuid.uuid4, unique=True,
                           primary_key=True, editable=False)

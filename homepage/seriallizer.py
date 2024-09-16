@@ -8,12 +8,6 @@ class HeroSectionSerial(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ResourceSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Resource
-        fields = '__all__'
-
-
 class CompanySerial(serializers.ModelSerializer):
     class Meta:
         model = Companies
@@ -115,3 +109,10 @@ class FooterSerial(serializers.ModelSerializer):
                 footer=instance).update(**termsofService_data)
 
         return instance
+
+
+# Resource
+class ResourceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Resource
+        fields = '__all__'
