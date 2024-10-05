@@ -1,17 +1,107 @@
-# Python
-*.pyc
+# Byte-compiled / optimized / DLL files
+*.py[cod]
 __pycache__/
 *.pyo
 *.pyd
 
-# Django
+# Django specific
 db.sqlite3
+db.sqlite3-journal
 media/
-.env
+staticfiles/
+*.log
+*.pot
+*.pyc
 
-# Environment
+# Local development environment variables
+.env
+.env.*
+
+# Virtual environments
 venv/
-.env/
+env/
+ENV/
+
+# macOS
+.DS_Store
 
 # VSCode
 .vscode/
+
+# JetBrains IDEs (PyCharm, IntelliJ, etc.)
+.idea/
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pytest cache
+.pytest_cache/
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+
+# Test artifacts
+*.cover
+*.log
+.tox/
+noxfile
+.cache/
+
+# pipenv
+Pipfile.lock
+
+# Docker
+*.log
+docker-compose.override.yml
+docker-compose.local.yml
+Dockerfile
+
+# Sentry environment file
+.sentryclirc
+
+# Deployment
+.local/
+.swp
+
+# Node modules (if applicable, e.g., if using npm/yarn for frontend)
+node_modules/
+
+# Celery beat schedule file
+celerybeat-schedule
+
+# Database dumps
+*.sql
+*.sqlite3
+
+# Distribution / Packaging
+build/
+dist/
+*.egg-info/
+
+# IDE specific files
+*.iml
+
+# Pycharm
+.idea/
+
+# System files
+Thumbs.db
+Desktop.ini
+
+# Ansible related
+*.retry
+
+# Supabase connection info
+.supabase/
+
+# Others
+*.bak
+*.swp
+*.swo
