@@ -17,10 +17,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-8btxn)0yxr+(7#qm0f&a@$zmh+6vq)9vu$7!gnnjia+e8=2q9%'
+SECRET_KEY = os.getenv("GOOGLE_OAUTH_CALLBACK_URL")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# ALLOWED_HOSTS = ["hattz.ac.tz/"]
 ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = 'users.User'
@@ -169,12 +171,6 @@ WSGI_APPLICATION = 'hat_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
 
 DATABASES = {
     'default': {
@@ -186,6 +182,18 @@ DATABASES = {
         'PORT': '5432',
     }
 }
+
+# Mysql Database
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'hattzac_hattzac',
+#         'USER': 'hattzac_hattzac',
+#         'PASSWORD': 'your_password',
+#         'HOST': 'localhost',
+#         'PORT': '3306',
+#     }
+# }
 
 
 # Password validation
