@@ -35,6 +35,7 @@ class RegisterView(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
+        # changed from true to false
         serializer.is_valid(raise_exception=True)
         user = self.perform_create(serializer)
 

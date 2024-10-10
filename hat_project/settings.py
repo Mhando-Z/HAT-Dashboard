@@ -3,6 +3,8 @@
 from datetime import timedelta
 from pathlib import Path
 import os
+import dj_database_url
+from decouple import config
 
 from dotenv import load_dotenv
 load_dotenv(".env")
@@ -16,11 +18,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-8btxn)0yxr+(7#qm0f&a@$zmh+6vq)9vu$7!gnnjia+e8=2q9%'
-SECRET_KEY = os.getenv("GOOGLE_OAUTH_CALLBACK_URL")
+# SECRET_KEY = 'django-insecure-8btxn)0yxr+(7#qm0f&a@$zmh+6vq)9vu$7!gnnjia+e8=2q9%'
+SECRET_KEY = config("DJANGO_SECRETS_KEYS")
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config("DEBUG", cast=bool)
 
 # ALLOWED_HOSTS = ["hattz.ac.tz/"]
 ALLOWED_HOSTS = []
@@ -144,7 +147,7 @@ ROOT_URLCONF = 'hat_project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ["templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -182,6 +185,8 @@ DATABASES = {
         'PORT': '5432',
     }
 }
+
+DATABASES['default'] = dj_database_url.parse(config("DATABASE_URL"))
 
 # Mysql Database
 # DATABASES = {
