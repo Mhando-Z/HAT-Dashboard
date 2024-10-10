@@ -26,7 +26,7 @@ SECRET_KEY = config("DJANGO_SECRETS_KEYS")
 DEBUG = config("DEBUG", cast=bool)
 
 # ALLOWED_HOSTS = ["hattz.ac.tz/"]
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["hat-dashboard.onrender.com"]
 
 AUTH_USER_MODEL = 'users.User'
 
