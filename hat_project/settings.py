@@ -26,7 +26,7 @@ SECRET_KEY = config("DJANGO_SECRETS_KEYS")
 DEBUG = config("DEBUG", cast=bool)
 
 # ALLOWED_HOSTS = ["hattz.ac.tz/"]
-ALLOWED_HOSTS = ["127.0.0.1", "hat-dashboard.onrender.com"]
+ALLOWED_HOSTS = ["127.0.0.1", "hat-dashboard.onrender.com", "localhost"]
 
 AUTH_USER_MODEL = 'users.User'
 
@@ -130,6 +130,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
 
     'django.middleware.security.SecurityMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
