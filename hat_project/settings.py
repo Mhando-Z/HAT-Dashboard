@@ -26,7 +26,7 @@ SECRET_KEY = config("DJANGO_SECRETS_KEYS")
 DEBUG = config("DEBUG", cast=bool)
 
 # ALLOWED_HOSTS = ["hattz.ac.tz/"]
-ALLOWED_HOSTS = ["127.0.0.1", "hat-dashboard.onrender.com", "localhost"]
+ALLOWED_HOSTS = ["hat-dashboard.onrender.com"]
 
 AUTH_USER_MODEL = 'users.User'
 
@@ -176,16 +176,16 @@ WSGI_APPLICATION = 'hat_project.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'hattz',
-        'USER': 'postgres',
-        'PASSWORD': 'Mhando',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'hattz',
+#         'USER': 'postgres',
+#         'PASSWORD': 'Mhando',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
 
 DATABASES['default'] = dj_database_url.parse(config("DATABASE_URL"))
 
