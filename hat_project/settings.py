@@ -241,6 +241,10 @@ SUPABASE_URL = "https://cvherctwrqdsaxgjftay.supabase.co"
 SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN2aGVyY3R3cnFkc2F4Z2pmdGF5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjg5MjM4MjIsImV4cCI6MjA0NDQ5OTgyMn0.bYEjOHwp_052jsxvl78lbXL6IpYhaBaXqQtOPiaGv6c"  # Replace with your Supabase API Key
 SUPABASE_BUCKET = "media-files"
 
+SUPABASE_ACCESS_KEY_ID = 'f5f5c0c1e89549aa51b14a7ece3844e4'
+SUPABASE_SECRET_ACCESS_KEY = '0a1e14f7a2600ca482964eb9de694695ee89f4b5c0a83392f250a8b95a87b094'
+SUPABASE_REGION = 'us-east-1'
+
 # Use the custom Supabase storage for media files
 DEFAULT_FILE_STORAGE = 'utils.supabase_storage.SupabaseStorage'
 
