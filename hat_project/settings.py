@@ -246,7 +246,7 @@ SUPABASE_SECRET_ACCESS_KEY = '0a1e14f7a2600ca482964eb9de694695ee89f4b5c0a83392f2
 SUPABASE_REGION = 'us-east-1'
 
 # Use the custom Supabase storage for media files
-DEFAULT_FILE_STORAGE = 'utils.supabase_storage.SupabaseStorage'
+# DEFAULT_FILE_STORAGE = 'utils.supabase_storage.SupabaseStorage'
 
 
 STATIC_URL = '/static/'
