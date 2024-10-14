@@ -242,7 +242,7 @@ SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJ
 SUPABASE_BUCKET = "media-files"
 
 # Use the custom Supabase storage for media files
-DEFAULT_FILE_STORAGE = 'hat_project.utils.supabase_storage.SupabaseStorage'
+DEFAULT_FILE_STORAGE = 'utils.supabase_storage.SupabaseStorage'
 
 
 STATIC_URL = '/static/'
