@@ -236,6 +236,15 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
+# Supabase credentials
+SUPABASE_URL = "https://cvherctwrqdsaxgjftay.supabase.co"
+SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN2aGVyY3R3cnFkc2F4Z2pmdGF5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjg5MjM4MjIsImV4cCI6MjA0NDQ5OTgyMn0.bYEjOHwp_052jsxvl78lbXL6IpYhaBaXqQtOPiaGv6c"  # Replace with your Supabase API Key
+SUPABASE_BUCKET = "media-files"
+
+# Use the custom Supabase storage for media files
+DEFAULT_FILE_STORAGE = 'hat_project.utils.supabase_storage.SupabaseStorage'
+
+
 STATIC_URL = '/static/'
 MEDIA_URL = '/images/'
 
