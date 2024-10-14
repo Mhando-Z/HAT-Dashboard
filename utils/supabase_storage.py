@@ -17,7 +17,13 @@ class SupabaseStorage(Storage):
 
     def _save(self, name, content):
         try:
-            self.s3_client.upload_fileobj(content, self.bucket_name, name)
+            # Upload the file and set ACL to public-read
+            self.s3_client.upload_fileobj(
+                content,
+                self.bucket_name,
+                name,
+                ExtraArgs={'ACL': 'public-read'}
+            )
         except NoCredentialsError:
             print("Credentials not available")
         return name
