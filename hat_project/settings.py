@@ -26,7 +26,8 @@ SECRET_KEY = config("DJANGO_SECRETS_KEYS")
 DEBUG = config("DEBUG", cast=bool)
 
 # ALLOWED_HOSTS = ["hattz.ac.tz/"]
-ALLOWED_HOSTS = ["hat-dashboard.onrender.com"]
+ALLOWED_HOSTS = ["hat-dashboard.onrender.com",
+                 "127.0.0.1:8000", "127.0.0.1", ]
 
 AUTH_USER_MODEL = 'users.User'
 
@@ -187,7 +188,7 @@ DATABASES = {
     }
 }
 
-DATABASES['default'] = dj_database_url.parse(config("DATABASE_URL"))
+# DATABASES['default'] = dj_database_url.parse(config("DATABASE_URL"))
 
 # Mysql Database
 # DATABASES = {

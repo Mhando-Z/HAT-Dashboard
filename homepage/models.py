@@ -28,7 +28,11 @@ class HeroSection(models.Model):
 class PresidentSpeech(models.Model):
     title = models.CharField(null=True, blank=True, max_length=300)
     subtitle = models.CharField(null=True, blank=True, max_length=300)
+    name = models.CharField(null=True, blank=True, max_length=300)
+    cheo = models.CharField(null=True, blank=True, max_length=300)
     description = models.TextField(null=True, blank=True)
+    description2 = models.TextField(null=True, blank=True)
+    description3 = models.TextField(null=True, blank=True)
     image = models.ImageField(null=True, blank=True,
                               upload_to="presidentSection/")
     image2 = models.ImageField(null=True, blank=True,
