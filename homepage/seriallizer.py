@@ -14,6 +14,12 @@ class CompanySerial(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class ResourceSerial(serializers.ModelSerializer):
+    class Meta:
+        model = Resources
+        fields = '__all__'
+
+
 class PresidentSerial(serializers.ModelSerializer):
     class Meta:
         model = PresidentSpeech

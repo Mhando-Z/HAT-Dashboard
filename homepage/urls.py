@@ -16,10 +16,13 @@ urlpatterns = [
     path("Gallery/", views.GallerySect, name="Gallery"),
     path("Companies/", views.PartnersSect, name="Companies"),
     path('Resources/', views.ResourceSectt, name='resources'),
+    path('Resource/', views.ResouceSect, name='Resources'),
 
     # Detail Endpoints
     path('Resources_Details/<str:pk>/',
          views.resource_detail, name='resource_detail'),
+    path('resources_details/<str:pk>/',
+         views.Resouces_details, name='Resource_detail'),
     path("Companies_Details/<str:pk>/",
          views.Partners_details, name="CompaniesDetails"),
     path("Announce_Details/<str:pk>/",

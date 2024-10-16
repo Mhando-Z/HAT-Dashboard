@@ -15,4 +15,5 @@ admin.site.register(Conference)
 admin.site.register(Announce)
 admin.site.register(Companies)
 admin.site.register(Resource)
+admin.site.register(Resources)
 #

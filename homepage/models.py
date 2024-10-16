@@ -129,6 +129,28 @@ class Gallery(models.Model):
         ordering = ['-dateIssued']
 
 
+# Gallery Section
+
+
+class Resources(models.Model):
+    title = models.CharField(null=True, blank=True,
+                             max_length=300, default="")
+    author = models.CharField(null=True, blank=True,
+                              max_length=300, default="")
+    description = models.TextField(null=True, blank=True)
+    document = models.FileField(null=True, blank=True, upload_to='Resouces_Docs/',
+                                help_text="Upload the research paper in PDF format.")
+    dateIssued = models.DateTimeField(auto_now_add=True)
+    id = models.UUIDField(default=uuid.uuid4, unique=True,
+                          primary_key=True, editable=False)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        ordering = ['-dateIssued']
+
+
 # Companies Section
 
 
@@ -155,8 +177,11 @@ class Announce(models.Model):
     title = models.CharField(null=True, blank=True,
                              max_length=300, default="Hat")
     description = models.TextField(null=True, blank=True)
+    document = models.FileField(null=True, blank=True, upload_to='Announce_Docs/',
+                                help_text="Upload the research paper in PDF format.")
     image = models.ImageField(null=True, blank=True,
                               upload_to="Announcements/")
+
     image2 = models.ImageField(
         null=True, blank=True, upload_to="Announcements/")
     dateIssued = models.DateTimeField(auto_now_add=True)
@@ -185,10 +210,12 @@ class Resource(models.Model):
     author = models.CharField(null=True, blank=True,
                               max_length=300, default="Hat")
     description = models.TextField(null=True, blank=True)
+    document = models.FileField(null=True, blank=True, upload_to='research_papers/',
+                                help_text="Upload the research paper in PDF format.")
     image = models.ImageField(null=True, blank=True, upload_to="Resources/")
     image2 = models.ImageField(null=True, blank=True, upload_to="Resources/")
     video_url = models.CharField(
-        null=True, blank=True, max_length=300, default="Hat")
+        null=True, blank=True, max_length=300, default="")
     ref1 = models.CharField(null=True, blank=True,
                             max_length=300, default="Hat")
     ref2 = models.CharField(null=True, blank=True,

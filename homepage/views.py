@@ -376,6 +376,7 @@ def Gallery_details(request, pk):
 
 @api_view(['GET', 'POST'])
 def ResourceSectt(request):
+
     if request.method == 'GET':
         resources = Resource.objects.all()
         serializers = ResourceSerializer(resources, many=True)
@@ -532,4 +533,45 @@ def Footer_details(request, pk):
 
     elif request.method == 'DELETE':
         footer.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+# RESOURCE SECTION
+
+
+@api_view(['GET', 'POST'])
+def ResouceSect(request):
+    if request.method == 'GET':
+        resources = Resources.objects.all()
+        serializers = ResourceSerial(resources, many=True)
+        return Response(serializers.data)
+    elif request.method == 'POST':
+        serializer = ResourceSerial(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes([IsAdminUser])
+def Resouces_details(request, pk):
+    try:
+        resources = Resources.objects.get(pk=pk)
+    except Resources.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = ResourceSerial(resources)
+        return Response(serializer.data)
+
+    elif request.method == 'PUT':
+        serializer = ResourceSerial(resources, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'DELETE':
+        resources.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
