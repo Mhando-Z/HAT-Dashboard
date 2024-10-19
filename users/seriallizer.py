@@ -3,6 +3,10 @@ from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth.password_validation import validate_password
+from django.urls import reverse
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 
 
 class ProfileSerializer(serializers.ModelSerializer):
@@ -106,15 +110,39 @@ class RegisterSerializer(serializers.ModelSerializer):
             email=validated_data['email']
         )
         user.set_password(validated_data['password'])
+        user.is_active = False
         user.save()
+
+        # Send verification email
+        self.send_verification_email(user)
         return user
 
+    def send_verification_email(self, user):
+        token = RefreshToken.for_user(user).access_token
+        verification_link = reverse('email-verify', kwargs={'token': token})
+        absurl = f"{self.context['request'].build_absolute_uri(
+            verification_link)}"
 
-# Update User
+        # Render the HTML template
+        html_message = render_to_string('hattz/email_verification.html', {
+            'username': user.username,
+            'verification_link': absurl,
+        })
+
+        # Optionally create a plain text version of the email
+        plain_message = strip_tags(html_message)
+
+        send_mail(
+            'Verify your email address',
+            plain_message,
+            'from@example.com',  # Replace with your sender email
+            [user.email],
+            html_message=html_message,  # This is the HTML version of the email
+            fail_silently=False,
+        )
 
 
 # Admin User Management
-
 
 class AdminUserManagementSerializer(serializers.ModelSerializer):
     profile = ProfileSerializer(required=False)

@@ -79,6 +79,7 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',  # Default
@@ -188,7 +189,7 @@ DATABASES = {
     }
 }
 
-# DATABASES['default'] = dj_database_url.parse(config("DATABASE_URL"))
+DATABASES['default'] = dj_database_url.parse(config("DATABASE_URL"))
 
 # Mysql Database
 # DATABASES = {
@@ -279,6 +280,14 @@ STRIPE_PUBLISHABLE_KEY = 'pk_test_51PfSbR2LTTNddPQFfkEcm6LOwOQiSWZT9CJwQvfdA85YE
 GOOGLE_OAUTH_CLIENT_ID = os.getenv("GOOGLE_OAUTH_CLIENT_ID")
 GOOGLE_OAUTH_CLIENT_SECRET = os.getenv("GOOGLE_OAUTH_CLIENT_SECRET")
 GOOGLE_OAUTH_CALLBACK_URL = os.getenv("GOOGLE_OAUTH_CALLBACK_URL")
+
+# Django SMTP
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = "mhandozs17@gmail.com"  # email sending address
+EMAIL_HOST_PASSWORD = os.getenv("GOOGLE_APP_PASSWORD")
 
 
 # Google configuration (you'll need to get these from the Google Developer Console)

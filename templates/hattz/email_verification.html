@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Email Verification - Historical Association of Tanzania</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap");
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes slideIn {
+        from {
+          transform: translateY(-20px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      body {
+        font-family: "Poppins", Arial, sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        margin: 0;
+        padding: 20px;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .container {
+        max-width: 600px;
+        width: 100%;
+        background: #fff;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        animation: fadeIn 1s ease-out;
+      }
+
+      .logo-container {
+        margin-bottom: 30px;
+        animation: slideIn 1s ease-out;
+      }
+
+      .logo-container img {
+        max-width: 150px;
+        width: 100%;
+        height: auto;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      h1 {
+        color: #333;
+        font-size: 28px;
+        margin-bottom: 20px;
+        animation: slideIn 1s ease-out 0.2s both;
+      }
+
+      p {
+        line-height: 1.8;
+        color: #555;
+        font-size: 16px;
+        margin-bottom: 20px;
+        animation: slideIn 1s ease-out 0.4s both;
+      }
+
+      .btn {
+        background: #007bff;
+        color: white;
+        padding: 12px 30px;
+        text-decoration: none;
+        border-radius: 30px;
+        display: inline-block;
+        font-size: 18px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        animation: slideIn 1s ease-out 0.6s both;
+      }
+
+      .btn:hover {
+        background: #0056b3;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+      }
+
+      .footer {
+        margin-top: 40px;
+        font-size: 14px;
+        color: #888;
+        animation: slideIn 1s ease-out 0.8s both;
+      }
+
+      @media (max-width: 600px) {
+        .container {
+          padding: 30px;
+        }
+
+        h1 {
+          font-size: 24px;
+        }
+
+        p {
+          font-size: 15px;
+        }
+
+        .btn {
+          padding: 10px 25px;
+          font-size: 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="logo-container">
+        <img
+          src="https://cvherctwrqdsaxgjftay.supabase.co/storage/v1/object/public/media-files/Logo3%20(1).png"
+          alt="Historical Association of Tanzania Logo"
+        />
+      </div>
+
+      <h1>Verify Your Email</h1>
+      <p>Hello {{ username }},</p>
+      <p>
+        Thank you for joining the Historical Association of Tanzania! We're
+        excited to have you on board. To ensure the security of your account and
+        start exploring our resources, please verify your email address by
+        clicking the button below:
+      </p>
+      <a href="{{ verification_link }}" class="btn">Verify My Email</a>
+      <p>
+        This link will expire in 24 hours for security reasons. If you didn't
+        create an account, please disregard this email.
+      </p>
+      <div class="footer">
+        <p>
+          Best regards,<br /><strong>Historical Association of Tanzania</strong>
+        </p>
+        <p>
+          If you have any questions, please contact us at
+          support@historicaltanzania.org
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

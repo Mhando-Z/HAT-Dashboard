@@ -1,5 +1,4 @@
-import uuid
-import stripe
+from django.contrib.auth import get_user_model
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
@@ -20,8 +19,12 @@ from rest_framework.response import Response
 from rest_framework import generics, status, viewsets
 from rest_framework.generics import RetrieveAPIView
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
+from rest_framework_simplejwt.tokens import TokenError, AccessToken
+from django.shortcuts import render, redirect
 from .models import *
 from . seriallizer import *
+import uuid
+import stripe
 
 
 class MyTokenObtainPairView(TokenObtainPairView):
@@ -157,31 +160,8 @@ class ChangePasswordView(APIView):
             return Response({"detail": "Password changed successfully."}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 # userupdate view
-
-
-# Updating User
-
-# class UserProfileUpdateView(generics.UpdateAPIView):
-#     queryset = User.objects.all()
-#     serializer_class = UserUpdateSerializer
-#     permission_classes = [IsAuthenticated]
-
-#     def get_object(self):
-#         # Return the current user object
-#         return self.request.user
-
-#     def patch(self, request, *args, **kwargs):
-#         # Use PATCH method to support partial updates
-#         if 'multipart/form-data' in request.content_type:
-#             if 'profile_picture' in request.FILES:
-#                 # Check if file is uploaded
-#                 request.data['profile_picture'] = request.FILES['profile_picture']
-#         return super().patch(request, *args, **kwargs)
-
-#     def put(self, request, *args, **kwargs):
-#         # Handle PUT request for complete updates
-#         return super().put(request, *args, **kwargs)
 
 
 class UserProfileUpdateView(generics.UpdateAPIView):
@@ -253,3 +233,97 @@ def record_payment(request):
     }
 
     return Response({'payment': serializer.data, 'receipt': receipt}, status=status.HTTP_201_CREATED)
+
+
+class VerifyEmailView(APIView):
+    def get(self, request, token):
+        try:
+            access_token = AccessToken(token)
+            user_id = access_token['user_id']
+            user = User.objects.get(id=user_id)
+
+            if user.is_active:
+                # Render already verified template
+                login_url = "https://historical-association-of-tanzania.vercel.app/Login/"
+
+                return render(request, 'hattz/already_verified.html', {
+                    'username': user.username,
+                    'login_url': login_url
+                })
+
+            # Activate the user
+            user.is_active = True
+            user.save()
+
+            # Render success template
+            # Replace with your actual frontend login URL
+            login_url = "https://historical-association-of-tanzania.vercel.app/Login/"
+            return render(request, 'hattz/email_verification_success.html', {'username': user.username, 'login_url': login_url})
+
+        except TokenError:
+            return Response({"message": "Invalid or expired token"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+User = get_user_model()
+
+
+class ResendEmailVerification(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        email = request.data.get('email')
+        try:
+            # Get user by email
+            user = User.objects.get(email=email)
+
+            # Check if the user is already active
+            if user.is_active:
+                return Response({
+                    'detail': 'Your account is already verified.',
+                    'code': 'user_already_verified'
+                }, status=status.HTTP_400_BAD_REQUEST)
+
+            # Call the function to send verification email
+            self.send_verification_email(user, request)
+
+            return Response({'detail': 'Verification email resent'}, status=status.HTTP_200_OK)
+
+        except User.DoesNotExist:
+            return Response({
+                'detail': 'User with this email does not exist',
+                'code': 'user_not_found'
+            }, status=status.HTTP_404_NOT_FOUND)
+
+        except Exception as e:
+            return Response({
+                'detail': 'An error occurred while processing your request',
+                'code': 'server_error'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def send_verification_email(self, user, request):
+        # Generate a new token for the user
+        token = RefreshToken.for_user(user).access_token
+
+        # Generate verification link
+        verification_link = reverse(
+            'email-verify', kwargs={'token': str(token)})
+        absurl = request.build_absolute_uri(verification_link)
+
+        # Render the HTML template for the email
+        html_message = render_to_string('hattz/email_verification.html', {
+            'username': user.username,
+            'verification_link': absurl,
+        })
+
+        # Create a plain text version of the email
+        plain_message = strip_tags(html_message)
+
+        # Send email
+        send_mail(
+            subject='Verify your email address',
+            message=plain_message,
+            from_email='from@example.com',  # Update with your sender email
+            recipient_list=[user.email],
+            fail_silently=False,
+            html_message=html_message,  # HTML version of the email
+        )
