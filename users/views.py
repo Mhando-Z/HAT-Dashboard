@@ -385,7 +385,9 @@ class PasswordResetRequestView(APIView):
             domain = current_site.domain
             # reset_link = f"http://{domain}/Password-Reset/confirm//{uid}/{token}/"
             reset_link = f"http://historical-association-of-tanzania.vercel.app//Password-Reset/confirm/{uid}/{token}/"
-            mail_subject = 'Reset your password'
+            
+            # Email subject and HTML message
+            mail_subject = 'Reset Your Password'
             message = render_to_string('hattz/password_reset_email.html', {
                 'user': user,
                 'domain': domain,
@@ -394,8 +396,14 @@ class PasswordResetRequestView(APIView):
                 'reset_link': reset_link,
             })
 
-            # Send email
-            send_mail(mail_subject, message, 'hattanzania@gmail.com', [email])
+            # Send email using html_message parameter
+            send_mail(
+                subject=mail_subject,
+                message='Here is your password reset link.',
+                from_email='hattanzania@gmail.com',
+                recipient_list=[email],
+                html_message=message  # The rendered HTML email template
+            )
             return Response({"message": "Password reset link sent to your email."}, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
