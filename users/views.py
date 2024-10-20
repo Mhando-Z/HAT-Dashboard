@@ -384,8 +384,7 @@ class PasswordResetRequestView(APIView):
             current_site = get_current_site(request)
             domain = current_site.domain
             # reset_link = f"http://{domain}/Password-Reset/confirm//{uid}/{token}/"
-            reset_link = f"http://historical-association-of-tanzania.vercel.app//Password-Reset/confirm/{
-                uid}/{token}/"
+            reset_link = f"http://historical-association-of-tanzania.vercel.app//Password-Reset/confirm/{uid}/{token}/"
             mail_subject = 'Reset your password'
             message = render_to_string('hattz/password_reset_email.html', {
                 'user': user,
