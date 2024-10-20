@@ -26,9 +26,9 @@ SECRET_KEY = config("DJANGO_SECRETS_KEYS")
 DEBUG = config("DEBUG", cast=bool)
 
 # ALLOWED_HOSTS = ["hattz.ac.tz/"]
-ALLOWED_HOSTS = ["hat-dashboard.onrender.com"]
-# ALLOWED_HOSTS = ["hat-dashboard.onrender.com",
-#                  "127.0.0.1:8000", "127.0.0.1", ]
+# ALLOWED_HOSTS = ["hat-dashboard.onrender.com"]
+ALLOWED_HOSTS = ["hat-dashboard.onrender.com",
+                 "127.0.0.1:8000", "127.0.0.1", ]
 
 AUTH_USER_MODEL = 'users.User'
 
@@ -282,17 +282,15 @@ GOOGLE_OAUTH_CLIENT_ID = os.getenv("GOOGLE_OAUTH_CLIENT_ID")
 GOOGLE_OAUTH_CLIENT_SECRET = os.getenv("GOOGLE_OAUTH_CLIENT_SECRET")
 GOOGLE_OAUTH_CALLBACK_URL = os.getenv("GOOGLE_OAUTH_CALLBACK_URL")
 
-# Django SMTP
+# # Django SMTP
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = "mhandozs17@gmail.com"  # email sending address
-EMAIL_HOST_PASSWORD = os.getenv("GOOGLE_APP_PASSWORD")
+EMAIL_HOST_USER = "hattanzania@gmail.com"
+EMAIL_HOST_PASSWORD = 'msns dgxi zvsh ibyw'
 
 
-# Google configuration (you'll need to get these from the Google Developer Console)
-# django-allauth (social)
 # Authenticate if local account with this email address already exists
 SOCIALACCOUNT_EMAIL_AUTHENTICATION = True
 # Connect local account and social account if local account with that email address already exists

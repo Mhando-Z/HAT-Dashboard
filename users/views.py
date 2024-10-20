@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from rest_framework.generics import GenericAPIView
+from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 from django.core.mail import send_mail
 from django.contrib.auth.models import User
@@ -322,8 +323,102 @@ class ResendEmailVerification(APIView):
         send_mail(
             subject='Verify your email address',
             message=plain_message,
-            from_email='from@example.com',  # Update with your sender email
-            recipient_list=[user.email],
+            from_email='hattanzania@gmail.com',  # Professional sender email
+            recipient_list=[user.email],    # Receiver's email
             fail_silently=False,
-            html_message=html_message,  # HTML version of the email
+            html_message=html_message,      # HTML version of the email
         )
+
+
+@api_view(['POST'])
+def send_email(request):
+    email = request.data.get('email')
+    subject = request.data.get('subject')
+    message_content = request.data.get('message')
+
+    if not email or not subject or not message_content:
+        return Response({'error': 'All fields are required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Load the email template and render it with context data
+    context = {
+        'email': email,
+        'subject': subject,
+        'message_content': message_content,
+    }
+
+    # Render HTML email template
+    html_message = render_to_string('hattz/user_query_email.html', context)
+    # Strip HTML tags to create a plain text version
+    plain_message = strip_tags(html_message)
+
+    try:
+        send_mail(
+            subject=subject,
+            message=plain_message,
+            from_email=email,
+            recipient_list=['info@hattz.ac.tz'],
+            html_message=html_message,
+        )
+        return Response({'success': 'Email sent successfully!'}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({'error': 'Failed to send email.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+# password reset
+User = get_user_model()
+
+
+class PasswordResetRequestView(APIView):
+    def post(self, request):
+        serializer = PasswordResetRequestSerializer(data=request.data)
+        if serializer.is_valid():
+            email = serializer.validated_data['email']
+            try:
+                user = User.objects.get(email=email)
+            except User.DoesNotExist:
+                return Response({"error": "User with this email does not exist."}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Generate token and prepare the email
+            token = default_token_generator.make_token(user)
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            current_site = get_current_site(request)
+            domain = current_site.domain
+            # reset_link = f"http://{domain}/Password-Reset/confirm//{uid}/{token}/"
+            reset_link = f"http://historical-association-of-tanzania.vercel.app//Password-Reset/confirm/{
+                uid}/{token}/"
+            mail_subject = 'Reset your password'
+            message = render_to_string('hattz/password_reset_email.html', {
+                'user': user,
+                'domain': domain,
+                'uid': uid,
+                'token': token,
+                'reset_link': reset_link,
+            })
+
+            # Send email
+            send_mail(mail_subject, message, 'hattanzania@gmail.com', [email])
+            return Response({"message": "Password reset link sent to your email."}, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class PasswordResetConfirmView(APIView):
+    def post(self, request, uidb64, token):
+        try:
+            # Decode the user ID from base64
+            uid = urlsafe_base64_decode(uidb64).decode()
+            user = User.objects.get(pk=uid)
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            return Response({'error': 'Invalid token or user ID.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Check if the token is valid
+        if default_token_generator.check_token(user, token):
+            # Retrieve the new password from the request data
+            new_password = request.data.get('new_password')
+            if new_password:
+                # Set the new password for the user
+                user.set_password(new_password)
+                user.save()
+                return Response({'message': 'Password reset successfully.'}, status=status.HTTP_200_OK)
+            return Response({'error': 'New password not provided.'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': 'Invalid token.'}, status=status.HTTP_400_BAD_REQUEST)

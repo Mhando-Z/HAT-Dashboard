@@ -1,3 +1,4 @@
+from django.contrib.auth.tokens import default_token_generator
 from .models import *
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -132,13 +133,14 @@ class RegisterSerializer(serializers.ModelSerializer):
         # Optionally create a plain text version of the email
         plain_message = strip_tags(html_message)
 
+        # Send email
         send_mail(
-            'Verify your email address',
-            plain_message,
-            'from@example.com',  # Replace with your sender email
-            [user.email],
-            html_message=html_message,  # This is the HTML version of the email
+            subject='Verify your email address',
+            message=plain_message,
+            from_email='hattanzania@gmail.com',  # Professional sender email
+            recipient_list=[user.email],    # Receiver's email
             fail_silently=False,
+            html_message=html_message,      # HTML version of the email
         )
 
 
@@ -275,3 +277,34 @@ class PaymentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Payment
         fields = '__all__'
+
+
+# Password Reset Logics
+
+class PasswordResetRequestSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+    def validate_email(self, value):
+        # Check if the email is registered in the system
+        if not User.objects.filter(email=value).exists():
+            raise serializers.ValidationError(
+                "No user is associated with this email.")
+        return value
+
+
+class PasswordResetConfirmSerializer(serializers.Serializer):
+    token = serializers.CharField()
+    password = serializers.CharField(write_only=True)
+
+    def validate_token(self, value):
+        user = self.context.get('user')
+        if not default_token_generator.check_token(user, value):
+            raise serializers.ValidationError("Invalid or expired token.")
+        return value
+
+    def save(self):
+        user = self.context.get('user')
+        password = self.validated_data['password']
+        user.set_password(password)
+        user.save()
+        return user

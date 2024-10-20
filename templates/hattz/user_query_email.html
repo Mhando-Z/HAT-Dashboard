@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>New Support Query</title>
+  </head>
+  <body
+    style="
+      font-family: Arial, sans-serif;
+      background-color: #f0f4f8;
+      color: #333;
+      line-height: 1.6;
+      padding: 20px;
+      margin: 0;
+    "
+  >
+    <table
+      cellpadding="0"
+      cellspacing="0"
+      border="0"
+      width="100%"
+      style="
+        max-width: 600px;
+        margin: auto;
+        background-color: #ffffff;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      "
+    >
+      <tr>
+        <td style="padding: 30px">
+          <table cellpadding="0" cellspacing="0" border="0" width="100%">
+            <tr>
+              <td>
+                <h2
+                  style="color: #2c3e50; margin-bottom: 20px; font-size: 24px"
+                >
+                  <span
+                    style="color: #3498db; font-size: 28px; margin-right: 10px"
+                    >&#9993;</span
+                  >
+                  New Support Query
+                </h2>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p style="margin-bottom: 15px">
+                  You have received a new support query from a user.
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td
+                style="
+                  background-color: #e8f0fe;
+                  padding: 15px;
+                  border-radius: 8px;
+                  margin-bottom: 20px;
+                  border-left: 4px solid #4a90e2;
+                "
+              >
+                <p style="margin: 0 0 10px 0">
+                  <span
+                    style="color: #e74c3c; font-size: 18px; margin-right: 5px"
+                    >&#128100;</span
+                  >
+                  <strong>From:</strong> {{ email }}
+                </p>
+                <p style="margin: 0">
+                  <span
+                    style="color: #f39c12; font-size: 18px; margin-right: 5px"
+                    >&#128278;</span
+                  >
+                  <strong>Subject:</strong> {{ subject }}
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p style="margin-bottom: 5px"><strong>Message:</strong></p>
+                <p style="margin-top: 0">{{ message_content }}</p>
+              </td>
+            </tr>
+            <tr>
+              <td
+                style="
+                  padding-top: 30px;
+                  font-size: 14px;
+                  color: #7f8c8d;
+                  text-align: center;
+                "
+              >
+                <p>
+                  <span
+                    style="color: #2980b9; font-size: 18px; margin-right: 5px"
+                    >&#9432;</span
+                  >
+                  This is an automated message. Please do not reply to this
+                  email.
+                </p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

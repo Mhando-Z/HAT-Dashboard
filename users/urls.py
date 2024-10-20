@@ -50,4 +50,10 @@ urlpatterns = [
          VerifyEmailView.as_view(), name='email-verify'),
     path('resend-email-verification/', ResendEmailVerification.as_view(),
          name='resend-email-verification'),
+    path('send-email/', send_email, name='send-email'),
+    path('Password_Reset/', PasswordResetRequestView.as_view(),
+         name='password_reset'),
+    path('password_reset_confirm/<uidb64>/<token>/', PasswordResetConfirmView.as_view(),
+         name='password_reset_confirm'),
+
 ]
