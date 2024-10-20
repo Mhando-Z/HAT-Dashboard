@@ -121,8 +121,7 @@ class RegisterSerializer(serializers.ModelSerializer):
     def send_verification_email(self, user):
         token = RefreshToken.for_user(user).access_token
         verification_link = reverse('email-verify', kwargs={'token': token})
-        absurl = f"{self.context['request'].build_absolute_uri(
-            verification_link)}"
+        absurl = f"{self.context['request'].build_absolute_uri(verification_link)}"
 
         # Render the HTML template
         html_message = render_to_string('hattz/email_verification.html', {
